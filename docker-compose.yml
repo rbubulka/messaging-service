@@ -1,6 +1,23 @@
 version: '3.8'
 
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: messaging-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      DB_USER: messaging_user
+      DB_PASSWORD: messaging_password
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: messaging_service
+    restart: always
+    command: ["uvicorn","src.main:app","--proxy-headers","--host","0.0.0.0","--port","8080"]      
   postgres:
     image: postgres:15-alpine
     container_name: messaging-service-db
